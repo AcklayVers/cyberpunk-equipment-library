@@ -56,11 +56,12 @@ function render(app,html){
   const action=values(actor.items).find(a=>a.type==='action'&&a.flags?.[CIC]?.activationAction===true&&a.flags[CIC].activationSourceItemId===item.id);
   const target=document.documentName==='Actor'?root.querySelector(`[data-item-id="${action?.id}"]`):root.querySelector('[data-cic-activation-controls]')??root.querySelector('form')??root;
   if(!target||target.querySelector(`[data-cpel-sandy-restore="${item.id}"]`))continue;
-  const panel=root.ownerDocument.createElement('span');panel.dataset.cpelSandyRestore=item.id;panel.style.cssText='display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px';
-  const counter=root.ownerDocument.createElement('span');counter.textContent=`Использования: ${uses.value}/${uses.max} ${uses.period}`;
-  const button=root.ownerDocument.createElement('button');button.type='button';button.textContent='Восстановить использование';
-  button.addEventListener('click',async event=>{event.preventDefault();event.stopPropagation();button.disabled=true;try{await restoreSandevistan1640(item);counter.textContent=`Использования: ${uses.max}/${uses.max} ${uses.period}`;}catch(e){report(e);globalThis.ui?.notifications?.error?.(e.message);}finally{button.disabled=false;}});
-  panel.append(counter,button);target.append(panel);
+  const nativeFrequency=document.documentName==='Actor'?target.querySelector('.frequency'):null;
+  const panel=root.ownerDocument.createElement('span');panel.dataset.cpelSandyRestore=item.id;panel.style.cssText='display:inline-flex;grid-area:tracking;gap:4px;align-items:center;white-space:nowrap;flex:0 0 auto;margin:0 4px';
+  const counter=root.ownerDocument.createElement('span');counter.textContent=`${uses.value}/${uses.max}`;counter.title=`Использования ${uses.period}`;
+  const button=root.ownerDocument.createElement('button');button.type='button';button.textContent='↻';button.title='Восстановить использование';button.setAttribute('aria-label','Восстановить использование');button.style.cssText='display:inline-flex;align-items:center;justify-content:center;flex:0 0 22px;width:22px;min-width:22px;max-width:22px;height:22px;min-height:22px;padding:0;margin:0;line-height:20px;font-size:16px;white-space:nowrap';
+  button.addEventListener('click',async event=>{event.preventDefault();event.stopPropagation();button.disabled=true;try{await restoreSandevistan1640(item);counter.textContent=`${uses.max}/${uses.max}`;}catch(e){report(e);globalThis.ui?.notifications?.error?.(e.message);}finally{button.disabled=false;}});
+  if(!nativeFrequency)panel.append(counter);panel.append(button);(nativeFrequency??target).append(panel);
  }
 }
 async function encounterEnded(combat){
