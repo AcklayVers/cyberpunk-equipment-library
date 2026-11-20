@@ -1,0 +1,168 @@
+{
+  "id": "cyberpunk-equipment-library",
+  "title": "Cyberpunk Remaster — Библиотека снаряжения",
+  "description": "Cyberpunk Equipment Library v1.6.39. Единые расходы имплантов и Militech Berserk Ragnarok.",
+  "version": "1.6.39",
+  "compatibility": {
+    "minimum": "14.361",
+    "verified": "14.369",
+    "maximum": "14"
+  },
+  "relationships": {
+    "requires": [
+      {
+        "id": "cyberpunk-remaster",
+        "type": "module",
+        "compatibility": {
+          "minimum": "2.17.8",
+          "verified": "2.17.8"
+        },
+        "manifest": "https://github.com/AcklayVers/cyberpunk-remaster/releases/latest/download/module.json"
+      }
+    ],
+    "systems": [
+      {
+        "id": "sf2e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "1.6.1",
+          "verified": "1.6.1"
+        }
+      }
+    ]
+  },
+  "packs": [
+    {
+      "name": "implants",
+      "label": "Импланты",
+      "path": "packs/implants-1639",
+      "type": "Item",
+      "system": "sf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "weapons",
+      "label": "Оружие",
+      "path": "packs/weapons-1623",
+      "type": "Item",
+      "system": "sf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "gear",
+      "label": "Снаряжение и броня",
+      "path": "packs/gear-1629",
+      "type": "Item",
+      "system": "sf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "actions",
+      "label": "Служебные действия",
+      "path": "packs/actions-1632",
+      "type": "Item",
+      "system": "sf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "journals",
+      "label": "Правила, экономика и каталог",
+      "path": "packs/journals-1633",
+      "type": "JournalEntry",
+      "system": "sf2e",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      },
+      "flags": {}
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Cyberpunk Remaster — Библиотека снаряжения",
+      "sorting": "m",
+      "color": "#087E84",
+      "packs": [
+        "implants",
+        "weapons",
+        "gear",
+        "actions",
+        "journals"
+      ]
+    }
+  ],
+  "flags": {
+    "canUpload": true
+  },
+  "esmodules": [
+    "scripts/sf2e-compat-1535.mjs",
+    "scripts/targeted-healing.mjs",
+    "neon-forge/forge/forge-runtime.mjs",
+    "scripts/remaster-implant-creator-bridge.mjs",
+    "scripts/weapon-upgrade-compatibility.mjs",
+    "scripts/action-grant-migration.mjs",
+    "scripts/fuma-blade-runtime.mjs",
+    "scripts/exoskeleton-action-runtime.mjs",
+    "scripts/content-migration-1534.mjs",
+    "scripts/critical-hit-riders.mjs",
+    "scripts/content-migration-1537.mjs",
+    "scripts/content-migration-1538.mjs",
+    "scripts/content-migration-1539.mjs",
+    "scripts/content-migration-1540.mjs",
+    "scripts/content-migration-1541.mjs",
+    "scripts/content-migration-1542.mjs",
+    "scripts/content-migration-1543.mjs",
+    "scripts/content-migration-1547.mjs",
+    "scripts/content-migration-1550.mjs",
+    "scripts/content-migration-1551.mjs",
+    "scripts/content-migration-1553.mjs",
+    "scripts/content-migration-1554.mjs",
+    "scripts/substances-1555.mjs",
+    "scripts/condition-links-1571.mjs",
+    "scripts/substance-auto-effects-1565.mjs",
+    "scripts/compendium-folder-1564.mjs",
+    "scripts/content-migration-1564.mjs",
+    "scripts/content-migration-1580.mjs",
+    "scripts/content-migration-1581.mjs",
+    "scripts/content-migration-1582.mjs",
+    "scripts/content-migration-1585.mjs",
+    "scripts/content-migration-1586.mjs",
+    "scripts/content-migration-1611.mjs",
+    "scripts/content-migration-1613.mjs",
+    "scripts/grenade-activation-1614.mjs",
+    "scripts/content-migration-1614.mjs",
+    "scripts/mutagen-effects-1616.mjs",
+    "scripts/item-image-migration.mjs",
+    "scripts/item-corrections-1619-runtime.mjs",
+    "scripts/unique-pkt-economy-1621.mjs",
+    "scripts/unique-pkt-content-1622.mjs",
+    "scripts/external-cyberarmor-1626.mjs",
+    "scripts/cyberarm-1632.mjs",
+    "scripts/catalog-consistency-1633.mjs",
+    "scripts/operating-systems-1634.mjs",
+    "scripts/operating-system-revision-1635.mjs"
+  ],
+  "styles": [
+    "neon-forge/styles/cyberpunk-forge.css",
+    "neon-forge/styles/cyberpunk-windows.css"
+  ],
+  "url": "https://github.com/AcklayVers/cyberpunk-equipment-library",
+  "manifest": "https://github.com/AcklayVers/cyberpunk-equipment-library/releases/latest/download/module.json",
+  "download": "https://github.com/AcklayVers/cyberpunk-equipment-library/releases/download/v1.6.39/cyberpunk-equipment-library.zip"
+}
