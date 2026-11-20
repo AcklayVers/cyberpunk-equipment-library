@@ -1,8 +1,8 @@
 {
   "id": "cyberpunk-equipment-library",
   "title": "Cyberpunk Remaster — Библиотека снаряжения",
-  "description": "Cyberpunk Equipment Library v1.6.39. Единые расходы имплантов и Militech Berserk Ragnarok.",
-  "version": "1.6.39",
+  "description": "Cyberpunk Equipment Library v1.6.40. Новые импланты и продвинутые версии, отдельные способности Сандевистанов и восстановление активаций.",
+  "version": "1.6.40",
   "compatibility": {
     "minimum": "14.361",
     "verified": "14.369",
@@ -35,7 +35,7 @@
     {
       "name": "implants",
       "label": "Импланты",
-      "path": "packs/implants-1639",
+      "path": "packs/implants-1640",
       "type": "Item",
       "system": "sf2e",
       "ownership": {
@@ -71,7 +71,7 @@
     {
       "name": "actions",
       "label": "Служебные действия",
-      "path": "packs/actions-1632",
+      "path": "packs/actions-1640",
       "type": "Item",
       "system": "sf2e",
       "ownership": {
@@ -156,7 +156,10 @@
     "scripts/cyberarm-1632.mjs",
     "scripts/catalog-consistency-1633.mjs",
     "scripts/operating-systems-1634.mjs",
-    "scripts/operating-system-revision-1635.mjs"
+    "scripts/operating-system-revision-1635.mjs",
+    "scripts/implant-expansion-1640.mjs",
+    "scripts/sandevistan-recovery-1640.mjs",
+    "scripts/sandevistan-abilities-1640.mjs"
   ],
   "styles": [
     "neon-forge/styles/cyberpunk-forge.css",
@@ -164,5 +167,5 @@
   ],
   "url": "https://github.com/AcklayVers/cyberpunk-equipment-library",
   "manifest": "https://github.com/AcklayVers/cyberpunk-equipment-library/releases/latest/download/module.json",
-  "download": "https://github.com/AcklayVers/cyberpunk-equipment-library/releases/download/v1.6.39/cyberpunk-equipment-library.zip"
+  "download": "https://github.com/AcklayVers/cyberpunk-equipment-library/releases/download/v1.6.40/cyberpunk-equipment-library.zip"
 }
