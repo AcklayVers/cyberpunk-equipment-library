@@ -1,8 +1,8 @@
 {
   "id": "cyberpunk-equipment-library",
   "title": "Cyberpunk Remaster — Библиотека снаряжения",
-  "description": "Cyberpunk Equipment Library v1.6.42. Раздельное размещение счётчиков и служебных кнопок; Shock-n-Awe 8d6/16d6 с перезарядкой 1 минута.",
-  "version": "1.6.42",
+  "description": "Cyberpunk Equipment Library v1.6.43. Shock-n-Awe: v.I — 8d6 раз в 10 минут, v.II — 16d6 раз в минуту; раздельное размещение счётчиков и служебных кнопок.",
+  "version": "1.6.43",
   "compatibility": {
     "minimum": "14.361",
     "verified": "14.369",
@@ -35,7 +35,7 @@
     {
       "name": "implants",
       "label": "Импланты",
-      "path": "packs/implants-1642",
+      "path": "packs/implants-1643",
       "type": "Item",
       "system": "sf2e",
       "ownership": {
@@ -167,5 +167,5 @@
   ],
   "url": "https://github.com/AcklayVers/cyberpunk-equipment-library",
   "manifest": "https://github.com/AcklayVers/cyberpunk-equipment-library/releases/latest/download/module.json",
-  "download": "https://github.com/AcklayVers/cyberpunk-equipment-library/releases/download/v1.6.42/cyberpunk-equipment-library.zip"
+  "download": "https://github.com/AcklayVers/cyberpunk-equipment-library/releases/download/v1.6.43/cyberpunk-equipment-library.zip"
 }

@@ -1,4 +1,4 @@
-import {IMPLANTS_1640, MIGRATIONS_1640, SHOCK_REVISION_1642} from './data/implant-expansion-1640.mjs';
+import {IMPLANTS_1640, MIGRATIONS_1640, SHOCK_REVISION_1642, SHOCK_REVISION_1643} from './data/implant-expansion-1640.mjs';
 import {installMicrogenerator1640} from './implant-microgenerator-1640.mjs';
 
 const MOD='cyberpunk-equipment-library', REM='cyberpunk-remaster', CIC='cyberpunk-implant-creator', NET='sf2e-netrunning';
@@ -59,8 +59,21 @@ export function patchImplant1640(input){
   }
   s.flags??={};s.flags[MOD]??={};s.flags[MOD].implantExpansion1640??=structuredClone(shock.after.flags[MOD].implantExpansion1640);
   const metadata=s.flags[MOD].implantExpansion1640,readyAt=s.flags[MOD].implant1640State?.readyAt;
-  if(Number.isFinite(Number(readyAt))&&readyAt!==undefined&&metadata.cooldownSeconds===600)s.flags[MOD].implant1640State.readyAt=Math.max(0,Number(readyAt)-540);
-  metadata.cooldownSeconds=60;metadata.damageDice=shock.damageDice;s.flags[MOD].shock1642Migrated='1.6.42';
+  // v.I keeps its prior timer here; the 1.6.43 step applies its final period below.
+  if(shock.id!==SHOCK_REVISION_1643.id){
+   if(Number.isFinite(Number(readyAt))&&readyAt!==undefined&&metadata.cooldownSeconds===600)s.flags[MOD].implant1640State.readyAt=Math.max(0,Number(readyAt)-540);
+   metadata.cooldownSeconds=60;
+  }
+  metadata.damageDice=shock.damageDice;s.flags[MOD].shock1642Migrated='1.6.42';
+ }
+ if(known?._id===SHOCK_REVISION_1643.id&&s.flags?.[MOD]?.shock1643Migrated!=='1.6.43'){
+  s.flags??={};s.flags[MOD]??={};
+  const metadata=s.flags[MOD].implantExpansion1640??=structuredClone(SHOCK_REVISION_1643.after.flags[MOD].implantExpansion1640);
+  const readyAt=s.flags[MOD].implant1640State?.readyAt;
+  if(metadata.cooldownSeconds===60&&readyAt!==undefined&&Number.isFinite(Number(readyAt)))s.flags[MOD].implant1640State.readyAt=Number(readyAt)+540;
+  metadata.cooldownSeconds=600;
+  const description=s.system?.description;if(typeof description?.value==='string')description.value=description.value.replaceAll('Раз в минуту','Раз в 10 минут');
+  s.flags[MOD].shock1643Migrated='1.6.43';
  }
  if(Array.isArray(s.system?.subitems))s.system.subitems=s.system.subitems.map(patchImplant1640);
  return s;
