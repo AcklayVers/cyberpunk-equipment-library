@@ -46,9 +46,27 @@ export async function cleanExpiredSandevistans1640(){
  if(!primaryGM()||cleaning)return;cleaning=true;
  try{for(const actor of actors())for(const item of values(actor.items))if(ownSandevistan1640(item)){const expired=expiredSandevistanEffects1640(item);if(expired.length)await actor.deleteEmbeddedDocuments('Item',expired.map(e=>e.id),{render:true,cpelSandy1640:true});}}finally{cleaning=false;}
 }
+function librarySource(item){
+ const s=raw(item),refs=[s._stats?.compendiumSource,s._stats?.duplicateSource,s.flags?.core?.sourceId].filter(x=>typeof x==='string'&&x.startsWith('Compendium.'));
+ return !refs.some(x=>!x.startsWith(`Compendium.${MOD}.`))&&(ownSandevistan1640(item)||s.flags?.[CIC]?.sourceModule===MOD);
+}
+export function arrangeActivationRow1642(row){
+ if(!row?.style)return;
+ // The system's controls track is only 2rem: reserve the actual width of the
+ // editor, trash and native power control rather than overflowing into charges.
+ row.style.gridTemplateColumns='2rem minmax(0, 1fr) max-content max-content';row.style.columnGap='10px';
+ const controls=row.querySelector('.item-controls');
+ if(controls){Object.assign(controls.style,{display:'inline-flex',alignItems:'center',justifyContent:'flex-end',flexWrap:'nowrap',gap:'6px',width:'max-content',minWidth:'max-content'});}
+ const name=row.querySelector('.name');
+ if(name){name.style.minWidth='0';const title=name.querySelector('a');if(title)Object.assign(title.style,{minWidth:'0',overflow:'hidden',textOverflow:'ellipsis'});}
+}
 function render(app,html){
  const root=html?.[0]??html,document=app.document??app.item??app.actor;if(!root?.querySelector||!document)return;
  const actor=document.documentName==='Actor'?document:owner(document);if(!actor?.isOwner)return;
+ if(document.documentName==='Actor')for(const action of values(actor.items)){
+  if(action.type!=='action'||action.flags?.[CIC]?.activationAction!==true)continue;
+  if(librarySource(actor.items.get(action.flags[CIC].activationSourceItemId)))arrangeActivationRow1642(root.querySelector(`[data-item-id="${action.id}"]`));
+ }
  const linked=document.type==='action'?actor.items.get(document.flags?.[CIC]?.activationSourceItemId):null;
  const items=document.documentName==='Actor'?values(actor.items).filter(ownSandevistan1640):ownSandevistan1640(document)?[document]:ownSandevistan1640(linked)?[linked]:[];
  for(const item of items){
@@ -57,7 +75,7 @@ function render(app,html){
   const target=document.documentName==='Actor'?root.querySelector(`[data-item-id="${action?.id}"]`):root.querySelector('[data-cic-activation-controls]')??root.querySelector('form')??root;
   if(!target||target.querySelector(`[data-cpel-sandy-restore="${item.id}"]`))continue;
   const nativeFrequency=document.documentName==='Actor'?target.querySelector('.frequency'):null;
-  const panel=root.ownerDocument.createElement('span');panel.dataset.cpelSandyRestore=item.id;panel.style.cssText='display:inline-flex;grid-area:tracking;gap:4px;align-items:center;white-space:nowrap;flex:0 0 auto;margin:0 4px';
+  const panel=root.ownerDocument.createElement('span');panel.dataset.cpelSandyRestore=item.id;panel.style.cssText='display:inline-flex;grid-area:tracking;gap:6px;align-items:center;white-space:nowrap;flex:0 0 auto;margin:0 6px 0 0';
   const counter=root.ownerDocument.createElement('span');counter.textContent=`${uses.value}/${uses.max}`;counter.title=`Использования ${uses.period}`;
   const button=root.ownerDocument.createElement('button');button.type='button';button.textContent='↻';button.title='Восстановить использование';button.setAttribute('aria-label','Восстановить использование');button.style.cssText='display:inline-flex;align-items:center;justify-content:center;flex:0 0 22px;width:22px;min-width:22px;max-width:22px;height:22px;min-height:22px;padding:0;margin:0;line-height:20px;font-size:16px;white-space:nowrap';
   button.addEventListener('click',async event=>{event.preventDefault();event.stopPropagation();button.disabled=true;try{await restoreSandevistan1640(item);counter.textContent=`${uses.max}/${uses.max}`;}catch(e){report(e);globalThis.ui?.notifications?.error?.(e.message);}finally{button.disabled=false;}});

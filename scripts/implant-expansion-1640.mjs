@@ -1,4 +1,4 @@
-import {IMPLANTS_1640, MIGRATIONS_1640} from './data/implant-expansion-1640.mjs';
+import {IMPLANTS_1640, MIGRATIONS_1640, SHOCK_REVISION_1642} from './data/implant-expansion-1640.mjs';
 import {installMicrogenerator1640} from './implant-microgenerator-1640.mjs';
 
 const MOD='cyberpunk-equipment-library', REM='cyberpunk-remaster', CIC='cyberpunk-implant-creator', NET='sf2e-netrunning';
@@ -50,6 +50,18 @@ export function patchImplant1640(input){
   if(!s.flags[CIC].activation||same(s.flags[CIC].activation,b.flags?.[CIC]?.activation))Object.assign(s.flags[CIC],structuredClone(a.flags[CIC]??{}));
   s.flags[MOD].implantExpansion1640=structuredClone(a.flags[MOD].implantExpansion1640);s.flags[MOD].implant1640Migrated='1.6.40';
  }
+ const shock=meta?.family==='shock-n-awe'?SHOCK_REVISION_1642.find(r=>r.id===known?._id):null;
+ if(shock&&s.flags?.[MOD]?.shock1642Migrated!=='1.6.42'){
+  for(const path of ['system.description.value',`flags.${CIC}.activation.effectDescription`]){
+   const value=get(s,path);if(typeof value!=='string')continue;
+   const next=same(value,get(shock.before,path))?get(shock.after,path):value.replaceAll(`@Damage[${shock.previousDice}d6[electricity]]`,`@Damage[${shock.damageDice}d6[electricity]]`).replaceAll('Раз в 10 минут','Раз в минуту');
+   const keys=path.split('.');let target=s;for(const k of keys.slice(0,-1))target=target[k]??={};target[keys.at(-1)]=next;
+  }
+  s.flags??={};s.flags[MOD]??={};s.flags[MOD].implantExpansion1640??=structuredClone(shock.after.flags[MOD].implantExpansion1640);
+  const metadata=s.flags[MOD].implantExpansion1640,readyAt=s.flags[MOD].implant1640State?.readyAt;
+  if(Number.isFinite(Number(readyAt))&&readyAt!==undefined&&metadata.cooldownSeconds===600)s.flags[MOD].implant1640State.readyAt=Math.max(0,Number(readyAt)-540);
+  metadata.cooldownSeconds=60;metadata.damageDice=shock.damageDice;s.flags[MOD].shock1642Migrated='1.6.42';
+ }
  if(Array.isArray(s.system?.subitems))s.system.subitems=s.system.subitems.map(patchImplant1640);
  return s;
 }
@@ -65,6 +77,11 @@ function primaryGM(){const gm=list(globalThis.game?.users).filter(x=>x.active&&x
 export async function migrateImplants1640(){
  if(!primaryGM())return {updated:0,failed:0};const result={updated:0,failed:0};
  for(const item of [...list(game.items),...actors().flatMap(a=>list(a.items))]){const update=implant1640Update(item);if(!Object.keys(update).length)continue;try{await item.update(update,ownOptions);result.updated++;}catch(e){result.failed++;report(e);}}
+ for(const actor of actors())for(const action of list(actor.items)){
+  if(implant1640Meta(sourceForAction(action))?.family!=='shock-n-awe')continue;
+  const patch=frequency1640(action);if(!patch||!Object.entries(patch).some(([path,value])=>!same(get(raw(action),path),value)))continue;
+  try{await action.update(patch,ownOptions);}catch(e){result.failed++;report(e);}
+ }
  return result;
 }
 
@@ -80,8 +97,8 @@ export function classDC1640(actor){const value=actor?.getStatistic?.('class')?.d
 
 export function frequency1640(action,changes=null){
  if(raw(action).type!=='action'||action?.flags?.[CIC]?.activationAction!==true)return null;
- const source=sourceForAction(action);if(!implant1640Meta(source)?.cooldownSeconds)return null;
- const patch={'system.frequency.per':'PT10M','system.frequency.max':1};
+ const source=sourceForAction(action),seconds=implant1640Meta(source)?.cooldownSeconds;if(!seconds)return null;
+ const patch={'system.frequency.per':seconds===60?'PT1M':'PT10M','system.frequency.max':1};
  const value=changes?.['system.frequency.value']??changes?.['system.frequency']?.value??changes?.system?.frequency?.value;
  if(value!==undefined&&Number(value)>0&&remaining1640(source)>0)patch['system.frequency.value']=0;
  return patch;
@@ -94,7 +111,7 @@ async function refund(item){
 }
 async function discard(effect){if(effect?.id&&ownerOf(effect)?.items?.has?.(effect.id))await effect.delete({...ownOptions,render:true});}
 async function cancelUse(item,effect){await refund(item);await discard(effect);}
-async function startCooldown(item){if(implant1640Meta(item)?.cooldownSeconds)await item.update({[`flags.${MOD}.implant1640State.readyAt`]:now()+600},ownOptions);}
+async function startCooldown(item){const seconds=implant1640Meta(item)?.cooldownSeconds;if(seconds)await item.update({[`flags.${MOD}.implant1640State.readyAt`]:now()+seconds},ownOptions);}
 
 async function pick(title,prompt,options,{confirmLabel='Подтверждаю условия активации',extra=''}={}){
  if(!options.length)return null;
@@ -182,7 +199,7 @@ async function activated(item,effect){
   if(m.family==='shock-n-awe'){
    const accepted=await pick(item.name,'Подтвердите полученный урон от попадания в ближнем бою. Разряд затронет всех остальных существ в 5 футах, включая союзников.',[{value:'confirm',label:'Ответный разряд'}],{confirmLabel:'Попадание разрешено; реакция доступна; это не ответный разряд другого импланта'});
    if(!accepted){await cancelUse(item,effect);return;}
-   await electricCard(item,m.tier===1?2:4,'Ответный разряд — 5 футов вокруг владельца');committed=true;await startCooldown(item);await discard(effect);return;
+   await electricCard(item,m.damageDice??(m.tier===1?8:16),'Ответный разряд — 5 футов вокруг владельца');committed=true;await startCooldown(item);await discard(effect);return;
   }
   // A stash extraction declares the normal Interact; inventory use stays native.
   if(m.family==='stash')await discard(effect);
@@ -220,7 +237,7 @@ export async function activate1640(item){
 
 async function restoreCooldowns(){
  if(!primaryGM())return;
- for(const actor of actors())for(const item of list(actor.items))if(implant1640Meta(item)?.cooldownSeconds&&item.flags?.[MOD]?.implant1640State?.readyAt&&remaining1640(item)<=0){
+ for(const actor of actors())for(const item of list(actor.items))if(implant1640Meta(item)?.cooldownSeconds&&item.flags?.[MOD]?.implant1640State?.readyAt!==undefined&&remaining1640(item)<=0){
   const action=linkedAction(item);if(action?.system?.frequency&&action.system.frequency.value<1)await action.update({'system.frequency.value':1},ownOptions);
   await item.update({[`flags.${MOD}.implant1640State.-=readyAt`]:null},ownOptions);
  }
